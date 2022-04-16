@@ -28,7 +28,7 @@ export const useStore = create<State>((set) => ({
   toggleProductFav: (id) =>
     set(
       produce((state) => {
-        const p = state.products.find((p) => p.id === id)
+        const p = state.products.find((p: Product) => p.id === id)
         if (p) p.fav = !p.fav
       })
     ),

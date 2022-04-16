@@ -63,6 +63,7 @@ export const Card = ({ id, name, model, product, fav }: Product) => {
       if (last && p === 1) toggleProductFav(id)
     },
     {
+      pointer: { touch: true },
       from: () => [0, 0],
       axis: 'x',
       bounds: { left: -150, right: 0 },
