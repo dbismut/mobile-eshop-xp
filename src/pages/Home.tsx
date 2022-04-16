@@ -1,4 +1,4 @@
-import { Box } from '../components/Atoms'
+import { Box, Container } from '../components/Atoms'
 import { Filter } from '../components/Filter'
 import { Card } from '../components/Card'
 import { useStore } from '../state'
@@ -15,7 +15,11 @@ export const Home = () => {
 
   return (
     <>
-      <h1>Robe</h1>
+      <Container css={{ marginTop: '$9' }}>
+        <Box as="h1" css={{ marginBottom: 0 }}>
+          Dresses
+        </Box>
+      </Container>
       <Filter />
       <Box
         css={{
