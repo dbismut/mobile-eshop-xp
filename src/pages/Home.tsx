@@ -2,10 +2,10 @@ import { Box, Container } from '../components/Atoms'
 import { Filter } from '../components/Filter'
 import { Card } from '../components/Card'
 import { useStore } from '../state'
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
-export const Home = () => {
+export const Home = forwardRef<any, any>((props, handleRef) => {
   const gridLayout = useStore((state) => state.gridLayout)
   const favLayout = useStore((state) => state.favLayout)
   const products = useStore((state) => state.products)
@@ -38,4 +38,4 @@ export const Home = () => {
       </Box>
     </>
   )
-}
+})
