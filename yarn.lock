@@ -7121,6 +7121,11 @@ react-scripts@5.0.0:
   optionalDependencies:
     fsevents "^2.3.2"
 
+react-vh@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-vh/-/react-vh-1.1.1.tgz#5c01db6b819c65579f79c28a15d730c087d06640"
+  integrity sha512-Eq4L5qCiv74/Gz3B8JFy8J9mivj65JfGkuELFpH6r7lTmOxFiBtBLPrYB0bY/lySOXga5Zn+J6QuzqEY0+uYnQ==
+
 react@17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"

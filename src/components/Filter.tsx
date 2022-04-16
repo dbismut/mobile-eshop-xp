@@ -21,7 +21,7 @@ export const Filter = () => {
     <Flex
       css={{
         position: 'sticky',
-        top: 0,
+        top: -1,
         width: '100%',
         justifyContent: 'center',
         zIndex: 10

@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import { useDrag } from '@use-gesture/react'
 //@ts-ignore
 import { useAnimini, spring } from '@animini/dom'
 import { RiHeart3Line, RiHeart3Fill } from 'react-icons/ri'
@@ -7,6 +6,7 @@ import { Product, useStore } from '../state'
 import { Box, ButtonBox, Flex } from './Atoms'
 import { clamp } from '../utils/math'
 import interpolate from 'color-interpolate'
+import { rubberbandIfOutOfBounds, useScroll } from '@use-gesture/react'
 
 const variants = {
   shown: { opacity: 1 },
@@ -16,7 +16,6 @@ const variants = {
 const motionSpring = { type: 'spring', damping: 10, stiffness: 100 }
 
 const colormap = interpolate(['white', 'black'])
-const LIKE_ANCHOR = 30
 
 const Img = ({
   shown,
@@ -38,56 +37,57 @@ const Img = ({
 export const Card = ({ id, name, model, product, fav }: Product) => {
   const gridLayout = useStore((state) => state.gridLayout)
   const toggleProductFav = useStore((state) => state.toggleProductFav)
-  const [dragRef, api] = useAnimini(spring)
-  const [likeBoxRef, likeBoxColorApi] = useAnimini()
+  const [scrollBoxRef, scrollBoxApi] = useAnimini()
   const [likeIconRef, likeIconApi] = useAnimini()
   const [likeIconOpacityRef, likeIconOpacityApi] = useAnimini()
 
-  const bind = useDrag(
-    ({ active, last, movement: [x] }) => {
-      if (x > 0) return
-      const p = clamp(-x - LIKE_ANCHOR * 4, 0, LIKE_ANCHOR) / LIKE_ANCHOR
-      api.start({ x: active ? x : 0 }, { immediate: active })
-      likeIconApi.start(
-        { x: active ? -Math.max(0, -x - LIKE_ANCHOR * 3) / 3 : 0 },
-        { immediate: active }
-      )
-      likeIconOpacityApi.start(
-        { opacity: active ? (fav ? 1 - p : p) : fav ? p : 1 - p },
-        { immediate: active }
-      )
-      likeBoxColorApi.start(
-        { backgroundColor: active ? colormap(p) : colormap(0) },
-        { immediate: active }
-      )
-      if (last && p === 1) toggleProductFav(id)
-    },
-    {
-      pointer: { touch: true },
-      from: () => [0, 0],
-      axis: 'x',
-      bounds: { left: -150, right: 0 },
-      rubberband: 0.8,
-      filterTaps: true,
-      enabled: gridLayout === 'model'
-    }
-  )
+  const scrollLimit = gridLayout === 'model' ? 150 : 75
+
+  const onScroll = () => {
+    const s = scrollBoxRef.current.scrollLeft
+    if (s < 0) return
+    const x = rubberbandIfOutOfBounds(s, 0, scrollLimit)
+    const p = clamp(x - scrollLimit / 4, 0, scrollLimit / 2) / (scrollLimit / 2)
+    likeIconApi.start(
+      { x: -Math.max(x - scrollLimit / 2, 0) / 5 },
+      { immediate: true }
+    )
+    likeIconOpacityApi.start({ opacity: fav ? 1 - p : p }, { immediate: true })
+    scrollBoxApi.start({ backgroundColor: colormap(p) }, { immediate: true })
+  }
+
+  const onTouchEnd = () => {
+    if (scrollBoxRef.current.scrollLeft > scrollLimit) toggleProductFav(id)
+  }
 
   return (
     <Box
       as={motion.div}
+      ref={scrollBoxRef}
+      onTouchEnd={onTouchEnd}
+      onScroll={onScroll}
       layout
+      layoutDependency={gridLayout}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      css={{ touchAction: 'pan-y', overflow: 'hidden' }}
+      css={{
+        aspectRatio: '5/8',
+        backgroundColor: '$white',
+        width: '100%',
+        display: 'flex',
+        overflow: 'scroll auto',
+        scrollSnapType: 'x mandatory',
+        '&::-webkit-scrollbar': {
+          display: 'none'
+        }
+      }}
     >
       <Box
-        ref={dragRef}
-        {...bind()}
         css={{
           aspectRatio: '5/8',
-          touchAction: 'pan-y',
+          height: '100%',
+          scrollSnapAlign: 'start',
           '> img': {
             position: 'absolute',
             inset: 0,
@@ -117,39 +117,38 @@ export const Card = ({ id, name, model, product, fav }: Product) => {
         <Img src={model} alt={name} shown={gridLayout === 'model'} />
         <Img src={product} alt={name} shown={gridLayout === 'product'} />
       </Box>
-      <Box
-        ref={likeBoxRef}
+      <Flex
         css={{
-          position: 'absolute',
+          minWidth: '100%',
+          justifyContent: 'flex-end',
           pointerEvents: 'none',
-          inset: 0,
-          zIndex: -1,
-          fontSize: '2.5rem',
-          backgroundColor: '$white'
+          fontSize: gridLayout === 'model' ? '2.5rem' : '1.5rem'
         }}
       >
-        <Flex
+        <Box
           ref={likeIconRef}
           css={{
-            position: 'absolute',
-            top: 0,
-            right: 30,
-            bottom: 0,
+            position: 'sticky',
+            paddingLeft: '$4',
+            right: '$4',
             color: '$white',
             mixBlendMode: 'difference'
           }}
         >
-          <Box>
-            <RiHeart3Line />
-            <Box
-              ref={likeIconOpacityRef}
-              css={{ position: 'absolute', inset: 0, opacity: fav ? 1 : 0 }}
-            >
-              <RiHeart3Fill />
-            </Box>
+          <RiHeart3Line />
+          <Box
+            ref={likeIconOpacityRef}
+            css={{
+              position: 'absolute',
+              inset: 0,
+              paddingLeft: '$4',
+              opacity: fav ? 1 : 0
+            }}
+          >
+            <RiHeart3Fill />
           </Box>
-        </Flex>
-      </Box>
+        </Box>
+      </Flex>
     </Box>
   )
 }
