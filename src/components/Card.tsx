@@ -67,7 +67,6 @@ export const Card = ({ id, name, model, product, fav }: Product) => {
       onTouchEnd={onTouchEnd}
       onScroll={onScroll}
       layout
-      layoutDependency={gridLayout}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
