@@ -10,6 +10,7 @@ export type Product = {
   model: string
   product: string
   fav: boolean
+  slug: string
 }
 
 type State = {
@@ -21,7 +22,7 @@ type State = {
   toggleProductFav(id: string): void
 }
 
-export const useStore = create<State>((set) => ({
+export const useStore = create<State>((set, get) => ({
   products: data,
   gridLayout: 'model',
   favLayout: false,
@@ -38,3 +39,8 @@ export const useStore = create<State>((set) => ({
     })),
   toggleFavLayout: () => set((state) => ({ favLayout: !state.favLayout }))
 }))
+
+export const useProductFromSlug = (slug: string) => {
+  const id = slug.split('--').shift()
+  return useStore((state) => state.products.find((p) => p.id === id))
+}

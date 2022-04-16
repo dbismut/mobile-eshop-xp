@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion'
+import { Link } from '@cher-ami/router'
 //@ts-ignore
-import { useAnimini, spring } from '@animini/dom'
+import { useAnimini } from '@animini/dom'
 import { RiHeart3Line, RiHeart3Fill } from 'react-icons/ri'
 import { Product, useStore } from '../state'
 import { Box, ButtonBox, Flex } from './Atoms'
 import { clamp } from '../utils/math'
 import interpolate from 'color-interpolate'
-import { rubberbandIfOutOfBounds, useScroll } from '@use-gesture/react'
+import { rubberbandIfOutOfBounds } from '@use-gesture/react'
 
 const variants = {
   shown: { opacity: 1 },
@@ -34,7 +35,7 @@ const Img = ({
   />
 )
 
-export const Card = ({ id, name, model, product, fav }: Product) => {
+export const Card = ({ id, name, model, product, slug, fav }: Product) => {
   const gridLayout = useStore((state) => state.gridLayout)
   const toggleProductFav = useStore((state) => state.toggleProductFav)
   const [scrollBoxRef, scrollBoxApi] = useAnimini()
@@ -87,7 +88,7 @@ export const Card = ({ id, name, model, product, fav }: Product) => {
           aspectRatio: '5/8',
           height: '100%',
           scrollSnapAlign: 'start',
-          '> img': {
+          '> a > img': {
             position: 'absolute',
             inset: 0,
             width: '100%',
@@ -113,8 +114,10 @@ export const Card = ({ id, name, model, product, fav }: Product) => {
             <RiHeart3Fill />
           </ButtonBox>
         </Box>
-        <Img src={model} alt={name} shown={gridLayout === 'model'} />
-        <Img src={product} alt={name} shown={gridLayout === 'product'} />
+        <Link to={`/p/${slug}`}>
+          <Img src={model} alt={name} shown={gridLayout === 'model'} />
+          <Img src={product} alt={name} shown={gridLayout === 'product'} />
+        </Link>
       </Box>
       <Flex
         css={{

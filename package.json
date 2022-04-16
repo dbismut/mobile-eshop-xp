@@ -24,6 +24,7 @@
     "react-intersection-observer": "8.34.0",
     "react-scripts": "5.0.0",
     "react-vh": "^1.1.1",
+    "slugify": "^1.6.5",
     "typescript": "4.6.3",
     "zustand": "3.7.2"
   },
