@@ -1,4 +1,4 @@
-import { Route } from 'wouter'
+import { Route, Switch, useLocation } from 'wouter'
 import useVH from 'react-vh'
 import { Menu } from './components/Menu'
 import { Home } from './pages/Home'
@@ -7,6 +7,8 @@ import { globalStyles } from './stitches.config'
 import { AnimatePresence } from 'framer-motion'
 
 export function App() {
+  const [location] = useLocation()
+  console.log({ location })
   useVH()
   globalStyles()
 
@@ -14,8 +16,10 @@ export function App() {
     <>
       <Menu />
       <AnimatePresence initial={false} exitBeforeEnter>
-        <Route key="home" path="/" component={Home} />
-        <Route key="product" path="/p/:slug" component={ProductPage} />
+        <Switch key={location}>
+          <Route path="/" component={Home} />
+          <Route path="/p/:slug" component={ProductPage} />
+        </Switch>
       </AnimatePresence>
     </>
   )
