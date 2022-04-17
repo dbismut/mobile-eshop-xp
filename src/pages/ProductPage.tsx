@@ -1,43 +1,43 @@
-import { forwardRef, useMemo } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Box, Container } from '../components/Atoms'
-import { Filter } from '../components/Filter'
-import { Card } from '../components/Card'
-import { useProductFromSlug, useStore } from '../state'
+import { useProductFromSlug } from '../state'
+import { motionEase } from '../utils/math'
 
-export const ProductPage = forwardRef<any, any>((props, handleRef) => {
+const variants = {
+  initial: { opacity: 0 },
+  enter: { opacity: 1 },
+  exit: { opacity: 0 }
+}
+
+export const ProductPage = (props: any) => {
   const product = useProductFromSlug(props.params.slug)
-  console.log(product)
-  const gridLayout = useStore((state) => state.gridLayout)
-  const favLayout = useStore((state) => state.favLayout)
-  const products = useStore((state) => state.products)
-  const favProducts = useMemo(() => products.filter((p) => p.fav), [products])
+  if (!product) return <>Not Found</>
 
-  const _products = favLayout ? favProducts : products
+  const { id, name, model, price } = product
 
   return (
     <>
-      <Container css={{ marginTop: '$9' }}>
-        <Box as="h1" css={{ marginBottom: 0 }}>
-          Dresses
-        </Box>
-      </Container>
-      <Filter />
       <Box
+        as={motion.div}
+        variants={variants}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+        transition={motionEase}
         css={{
-          display: 'grid',
-          padding: gridLayout === 'product' ? '$2 $1' : '$2 0',
-          gap: gridLayout === 'product' ? '$1' : '$2',
-          gridTemplateColumns:
-            gridLayout === 'product' ? 'repeat(2, 1fr)' : '1fr'
+          aspectRatio: '5/8',
+          width: '100%',
+          '> img': {
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+          }
         }}
       >
-        <AnimatePresence initial={false}>
-          {_products.map((p) => (
-            <Card key={p.id} {...p} />
-          ))}
-        </AnimatePresence>
+        <img src={model} alt={name} />
       </Box>
     </>
   )
-})
+}

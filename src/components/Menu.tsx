@@ -2,6 +2,7 @@ import { useDrag } from '@use-gesture/react'
 import { motion, useAnimation } from 'framer-motion'
 import { useEffect, useReducer, useState } from 'react'
 import { RiCheckboxBlankCircleFill, RiMenuFill } from 'react-icons/ri'
+import { motionEase } from '../utils/math'
 import { Box, ButtonBox, Flex } from './Atoms'
 
 const variants = {
@@ -10,8 +11,6 @@ const variants = {
 }
 
 const MENU_HEIGHT = 46
-
-const motionEase = { ease: [0.25, 0.1, 0.25, 0.1], duration: 0.3 }
 
 export const Menu = () => {
   const [isInversed, setInversed] = useState(false)

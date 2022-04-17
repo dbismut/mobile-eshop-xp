@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
-import { Link } from '@cher-ami/router'
+import { Link } from 'wouter'
 //@ts-ignore
 import { useAnimini } from '@animini/dom'
 import { RiHeart3Line, RiHeart3Fill } from 'react-icons/ri'
 import { Product, useStore } from '../state'
 import { Box, ButtonBox, Flex } from './Atoms'
-import { clamp } from '../utils/math'
+import { clamp, motionEase } from '../utils/math'
 import interpolate from 'color-interpolate'
 import { rubberbandIfOutOfBounds } from '@use-gesture/react'
 
@@ -114,7 +114,7 @@ export const Card = ({ id, name, model, product, slug, fav }: Product) => {
             <RiHeart3Fill />
           </ButtonBox>
         </Box>
-        <Link to={`/p/${slug}`}>
+        <Link href={`/p/${slug}`}>
           <Img src={model} alt={name} shown={gridLayout === 'model'} />
           <Img src={product} alt={name} shown={gridLayout === 'product'} />
         </Link>
