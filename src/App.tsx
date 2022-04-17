@@ -16,7 +16,7 @@ export function App() {
     <>
       <Menu />
       <AnimatePresence initial={false} exitBeforeEnter>
-        <Switch key={location}>
+        <Switch location={location} key={location}>
           <Route path="/" component={Home} />
           <Route path="/p/:slug" component={ProductPage} />
         </Switch>
