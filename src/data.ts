@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker'
 import slugify from 'slugify'
 
-export const data = new Array(14).fill(0).map((_, i) => {
+const _data = new Array(14).fill(0).map((_, i) => {
   const id = String(i).padStart(2, '0')
   const name = faker.commerce.productName()
   return {
@@ -14,3 +14,8 @@ export const data = new Array(14).fill(0).map((_, i) => {
     fav: false
   }
 })
+
+export const data = _data.map((p, i) => ({
+  ...p,
+  nextSlug: _data[(i + 1) % 14].slug
+}))

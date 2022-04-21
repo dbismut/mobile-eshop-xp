@@ -1,4 +1,4 @@
-import { styled } from '../stitches.config'
+import { css, styled } from '../stitches.config'
 
 export const Box = styled('div', { position: 'relative' })
 export const Flex = styled(Box, {
@@ -24,14 +24,20 @@ export const ButtonBox = ({
     as="button"
     // @ts-ignore
     css={{
-      all: 'unset',
       cursor: 'pointer',
       fontSize: icon ? '1.4em' : '1em',
       padding: '$2',
-      WebkitTapHighlightColor: 'transparent',
       '> svg': { display: 'block' },
       ...css
     }}
     {...props}
   />
 )
+
+export const thumbnailStyle = css({
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover'
+})

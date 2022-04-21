@@ -11,6 +11,7 @@ export type Product = {
   product: string
   fav: boolean
   slug: string
+  nextSlug: string
 }
 
 type State = {

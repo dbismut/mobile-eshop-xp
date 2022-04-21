@@ -4,7 +4,7 @@ import { Link } from 'wouter'
 import { useAnimini } from '@animini/dom'
 import { RiHeart3Line, RiHeart3Fill } from 'react-icons/ri'
 import { Product, useStore } from '../state'
-import { Box, ButtonBox, Flex } from './Atoms'
+import { Box, ButtonBox, Flex, thumbnailStyle } from './Atoms'
 import { clamp, motionEase } from '../utils/math'
 import interpolate from 'color-interpolate'
 import { rubberbandIfOutOfBounds } from '@use-gesture/react'
@@ -31,6 +31,7 @@ const Img = ({
     variants={variants}
     animate={shown ? 'shown' : 'hidden'}
     initial={false}
+    className={thumbnailStyle()}
     {...props}
   />
 )
@@ -84,18 +85,7 @@ export const Card = ({ id, name, model, product, slug, fav }: Product) => {
       }}
     >
       <Box
-        css={{
-          aspectRatio: '5/8',
-          height: '100%',
-          scrollSnapAlign: 'start',
-          '> a > img': {
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }
-        }}
+        css={{ aspectRatio: '5/8', height: '100%', scrollSnapAlign: 'start' }}
       >
         <Box
           as={motion.div}

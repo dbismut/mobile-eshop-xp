@@ -21,8 +21,11 @@ export const { styled, css, globalCss, keyframes } = createStitches({
       mx: '$2'
     },
     sizes: {
-      '100lvh': 'calc(var(--vh-total, 1vh) * 100)',
-      '100dvh': 'calc(var(--vh, 1vh) * 100)'
+      lvh: 'var(--vh-total, 1vh)',
+      dvh: 'var(--vh, 1vh)',
+      '100lvh': 'calc($lvh * 100)',
+      '100dvh': 'calc($dvh * 100)',
+      button: '50px'
     },
     transitions: {
       smooth: 'cubic-bezier(.6,.03,.25,1)'
@@ -46,7 +49,12 @@ export const globalStyles = globalCss({
     fontWeight: 500,
     fontFamily: 'system-ui,sans-serif'
   },
-  '*,*:after,*:before': { boxSizing: 'border-box' },
+  button: {
+    all: 'unset',
+    WebkitTapHighlightColor: 'transparent',
+    boxSizing: 'border-box'
+  },
+  '*,*:after,*:before, button': { boxSizing: 'border-box' },
   img: { display: 'block' },
   h1: {
     fontSize: '3rem'
