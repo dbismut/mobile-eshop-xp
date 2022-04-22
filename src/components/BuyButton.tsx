@@ -1,4 +1,6 @@
+import { useContext } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { BuyButtonContext } from '../state'
 import { Flex, Box } from './Atoms'
 
 export const Button: React.FC = ({ children }) => (
@@ -19,6 +21,7 @@ export const Button: React.FC = ({ children }) => (
 
 export const BuyButton: React.FC = ({ children }) => {
   const [ref, hasScrolled] = useInView({ initialInView: false })
+  const [hidden] = useContext(BuyButtonContext)
 
   return (
     <>
@@ -30,12 +33,15 @@ export const BuyButton: React.FC = ({ children }) => {
             width: hasScrolled ? '100%' : 'calc(100% - $space$mx * 2)',
             height: hasScrolled ? 'calc($button + $space$4)' : '$button',
             transform: hasScrolled ? 'translateY($space$2)' : 'none',
-            bottom: '$2',
-            zIndex: 10,
+            bottom: hidden ? 'calc(-$sizes$button * 4)' : '$2',
+            zIndex: 90,
             display: 'flex',
             justifyContent: 'center',
             $invert: '',
-            transition: 'all 150ms $smooth'
+            opacity: 1,
+            transition:
+              'all 150ms $smooth, opacity 500ms $smooth, bottom 500ms $smooth',
+            '.pp-enter &,.pp-exit &': { opacity: 0, transitionDuration: '0s' }
           }}
         >
           <Flex css={{ height: '$button' }}>{children}</Flex>
@@ -45,7 +51,7 @@ export const BuyButton: React.FC = ({ children }) => {
         css={{
           position: 'sticky',
           top: 0,
-          height: hasScrolled ? 0 : 'calc($button + 2 * $space$2)',
+          height: hasScrolled && !hidden ? 0 : 'calc($button + 2 * $space$2)',
           transition: 'height 350ms $smooth 350ms'
         }}
       >

@@ -1,17 +1,9 @@
 import { Box, Container } from '../components/Atoms'
-import { motion } from 'framer-motion'
 import { Filter } from '../components/Filter'
 import { Card } from '../components/Card'
 import { useStore } from '../state'
 import { useMemo } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { motionEase } from '../utils/math'
-
-const variants = {
-  initial: { opacity: 0 },
-  enter: { opacity: 1 },
-  exit: { opacity: 0 }
-}
 
 export const Home = () => {
   const gridLayout = useStore((state) => state.gridLayout)
@@ -22,12 +14,13 @@ export const Home = () => {
   const _products = favLayout ? favProducts : products
 
   return (
-    <motion.div
-      variants={variants}
-      initial="initial"
-      animate="enter"
-      exit="exit"
-      transition={motionEase}
+    <Box
+      css={{
+        '&.hp-enter': { opacity: 0 },
+        '&.hp-enter-active': { opacity: 1, transition: 'opacity 1s $smooth' },
+        '&.hp-exit': { opacity: 1 },
+        '&.hp-exit-active': { opacity: 0, transition: 'opacity 1s $smooth' }
+      }}
     >
       <Container css={{ marginTop: '$9' }}>
         <Box as="h1" css={{ marginBottom: 0 }}>
@@ -50,6 +43,6 @@ export const Home = () => {
           ))}
         </AnimatePresence>
       </Box>
-    </motion.div>
+    </Box>
   )
 }

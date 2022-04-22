@@ -2,6 +2,7 @@ import create from 'zustand'
 import produce from 'immer'
 
 import { data } from './data'
+import { createContext } from 'react'
 
 export type Product = {
   id: string
@@ -45,3 +46,5 @@ export const useProductFromSlug = (slug: string) => {
   const id = slug.split('--').shift()
   return useStore((state) => state.products.find((p) => p.id === id))
 }
+
+export const BuyButtonContext = createContext([false, (_flag: boolean) => {}])

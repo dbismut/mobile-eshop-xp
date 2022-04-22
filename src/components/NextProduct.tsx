@@ -1,12 +1,16 @@
 import { useDrag } from '@use-gesture/react'
-import { useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { RiHeart3Fill } from 'react-icons/ri'
+import InView from 'react-intersection-observer'
 import { Link, useLocation } from 'wouter'
+import { BuyButtonContext } from '../state'
 import { Flex, Box } from './Atoms'
 
 type Props = { slug: string }
 
 export const NextProduct = ({ slug }: Props) => {
+  const [, toggleBuyButton] = useContext(BuyButtonContext)
+
   const clipRef = useRef<HTMLDivElement>(null)
   const [, setLocation] = useLocation()
 
@@ -23,12 +27,15 @@ export const NextProduct = ({ slug }: Props) => {
         leftToScroll.current = bottom - window.innerHeight
       }
       const overflowScroll = -(leftToScroll.current + y)
-      if (overflowScroll >= 0) {
-        clipRef.current.style.transition = active ? 'none' : ''
+      if (!active) {
+        clipRef.current.style.transition = ''
+        clipRef.current.style.clipPath = 'inset(0% 0px 100% 0px)'
+      } else if (overflowScroll >= 0) {
+        clipRef.current.style.transition = 'none'
         clipRef.current.style.clipPath = `inset(0% 0px ${
-          (1 - (active ? overflowScroll / elHeight.current : 0)) * 100
+          (1 - Math.min(1, overflowScroll / elHeight.current)) * 100
         }% 0px)`
-        if (active && overflowScroll > 200) {
+        if (overflowScroll > 200) {
           setLocation(`/p/${slug}`)
           cancel()
         }
@@ -48,9 +55,17 @@ export const NextProduct = ({ slug }: Props) => {
             bottom: 0,
             left: 0,
             right: 0
+            // background: '#F0000088'
           }}
         />
         <Flex
+          as={InView}
+          threshold={0.5}
+          // @ts-ignore
+          onChange={(inView, entry) =>
+            // @ts-ignore
+            toggleBuyButton(inView && entry.intersectionRatio > 0)
+          }
           css={{
             justifyContent: 'center',
             paddingTop: '$7',
