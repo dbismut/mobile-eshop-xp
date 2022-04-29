@@ -69,6 +69,9 @@ export const ZoomableImage = ({ src, alt, css }: Props) => {
       css={{
         touchAction: 'pan-y',
         overflow: 'hidden',
+        userSelect: 'none',
+        WebkitUserDrag: 'none',
+        WebkitTouchCallout: 'none',
         '&::-webkit-scrollbar': { display: 'none' },
         ...css
       }}
@@ -81,10 +84,7 @@ export const ZoomableImage = ({ src, alt, css }: Props) => {
           width: `${100 / INITIAL_SCALE}%`,
           left: `${(1 - 1 / INITIAL_SCALE) * 50}%`,
           top: `${(1 - 1 / INITIAL_SCALE) * 50}%`,
-          pointerEvents: 'none',
-          userSelect: 'none',
-          WebkitUserDrag: 'none',
-          WebkitTouchCallout: 'none'
+          pointerEvents: 'none'
         }}
         ref={ref}
         src={src}
