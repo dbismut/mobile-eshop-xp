@@ -35,6 +35,7 @@ export const Home = () => {
       <Box
         css={{
           display: 'grid',
+          minHeight: '100vh',
           padding: gridLayout === 'product' ? '$2 $1' : '$2 0',
           gap: gridLayout === 'product' ? '$1' : '$2',
           gridTemplateColumns:

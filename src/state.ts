@@ -20,6 +20,7 @@ type State = {
   gridLayout: 'product' | 'model'
   inversedMenu: boolean
   favLayout: boolean
+  scroll: { visibleId?: string }
   toggleGridLayout(): void
   toggleFavLayout(): void
   toggleProductFav(id: string): void
@@ -28,9 +29,9 @@ type State = {
 
 export const useStore = create<State>((set, get) => ({
   products: data,
+  scroll: { visibleId: undefined },
   gridLayout: 'model',
   favLayout: false,
-  titleNode: null,
   inversedMenu: false,
   toggleProductFav: (id) =>
     set(
@@ -48,9 +49,15 @@ export const useStore = create<State>((set, get) => ({
     set((state) => ({ inversedMenu: !state.inversedMenu }))
 }))
 
+const store = useStore
+
 export const useProductFromSlug = (slug: string) => {
   const id = slug.split('--').shift()
   return useStore((state) => state.products.find((p) => p.id === id))
+}
+
+export const setVisibleId = (id?: string) => {
+  useStore.getState().scroll.visibleId = id
 }
 
 export const BuyButtonContext = createContext([false, (_flag: boolean) => {}])
