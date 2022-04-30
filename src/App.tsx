@@ -1,6 +1,6 @@
 import { cloneElement, useRef } from 'react'
 import { Route, Switch } from 'wouter'
-import useVH from 'react-vh'
+import { useVH } from './utils/react-vh'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { useLocation } from './utils/useLocation'
 import { Menu } from './components/Menu'
