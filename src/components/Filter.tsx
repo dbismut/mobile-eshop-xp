@@ -9,10 +9,13 @@ import { useInView } from 'react-intersection-observer'
 import { useStore } from '../state'
 import { Flex, Box, ButtonBox } from './Atoms'
 
-export const Filter = () => {
+type Props = {
+  toggleGridLayout(): void
+}
+
+export const Filter = ({ toggleGridLayout }: Props) => {
   const gridLayout = useStore((state) => state.gridLayout)
   const favLayout = useStore((state) => state.favLayout)
-  const toggleGridLayout = useStore((state) => state.toggleGridLayout)
   const toggleFavLayout = useStore((state) => state.toggleFavLayout)
 
   const [ref, isFull] = useInView({ initialInView: true })

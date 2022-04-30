@@ -2,16 +2,35 @@ import { Box, Container } from '../components/Atoms'
 import { Filter } from '../components/Filter'
 import { Card } from '../components/Card'
 import { useStore } from '../state'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 export const Home = () => {
+  const toggleGridLayout = useStore((state) => state.toggleGridLayout)
   const gridLayout = useStore((state) => state.gridLayout)
   const favLayout = useStore((state) => state.favLayout)
   const products = useStore((state) => state.products)
   const favProducts = useMemo(() => products.filter((p) => p.fav), [products])
 
+  const boxRef = useRef<HTMLDivElement>(null)
+
   const _products = favLayout ? favProducts : products
+
+  const toggleGridLayoutAndScroll = () => {
+    if (!boxRef.current) return
+    const y = window.scrollY
+    const w = window.innerWidth
+    const offsetTop = boxRef.current.offsetTop
+
+    const newY = Math.max(
+      0,
+      gridLayout === 'model'
+        ? offsetTop + (y - offsetTop) / 4 - (w * 8) / 10
+        : offsetTop + (y - offsetTop) * 4 + (w * 8) / 5
+    )
+    setTimeout(() => window.scroll({ top: newY }), 10)
+    toggleGridLayout()
+  }
 
   return (
     <Box
@@ -31,8 +50,9 @@ export const Home = () => {
           Dresses
         </Box>
       </Container>
-      <Filter />
+      <Filter toggleGridLayout={toggleGridLayoutAndScroll} />
       <Box
+        ref={boxRef}
         css={{
           display: 'grid',
           minHeight: '100vh',

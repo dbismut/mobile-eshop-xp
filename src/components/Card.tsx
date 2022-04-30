@@ -3,25 +3,16 @@ import { Link } from 'wouter'
 //@ts-ignore
 import { useAnimini } from '@animini/dom'
 import { RiHeart3Line, RiHeart3Fill } from 'react-icons/ri'
-import { Product, setVisibleId, useStore } from '../state'
+import { Product, useStore } from '../state'
 import { Box, ButtonBox, Flex, thumbnailStyle } from './Atoms'
 import { clamp, motionSpring } from '../utils/math'
 import interpolate from 'color-interpolate'
 import { rubberbandIfOutOfBounds } from '@use-gesture/react'
-import { InView } from 'react-intersection-observer'
-import { css } from '../stitches.config'
-import { useRef } from 'react'
 
 const variants = {
   shown: { opacity: 1 },
   hidden: { opacity: 0 }
 }
-
-const wrapperCss = css({
-  aspectRatio: '5/8',
-  height: '100%',
-  scrollSnapAlign: 'start'
-})
 
 const colormap = interpolate(['white', 'black'])
 
@@ -46,9 +37,6 @@ const Img = ({
 export const Card = ({ id, name, model, product, slug, fav }: Product) => {
   const gridLayout = useStore((state) => state.gridLayout)
   const toggleProductFav = useStore((state) => state.toggleProductFav)
-  const scrollState = useStore((state) => state.scroll)
-  const shouldScrollIntoView = useRef(false)
-  const isAnimating = useRef(false)
   const [scrollBoxRef, scrollBoxApi] = useAnimini()
   const [likeIconRef, likeIconApi] = useAnimini()
   const [likeIconOpacityRef, likeIconOpacityApi] = useAnimini()
@@ -79,19 +67,6 @@ export const Card = ({ id, name, model, product, slug, fav }: Product) => {
       onTouchEnd={onTouchEnd}
       onScroll={onScroll}
       layout
-      onLayoutAnimationStart={() => {
-        isAnimating.current = true
-        shouldScrollIntoView.current = id === scrollState.visibleId
-      }}
-      onLayoutAnimationComplete={() => {
-        setTimeout(() => (isAnimating.current = false), 500)
-        if (shouldScrollIntoView.current && scrollBoxRef.current) {
-          scrollBoxRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          })
-        }
-      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -105,12 +80,8 @@ export const Card = ({ id, name, model, product, slug, fav }: Product) => {
         '&::-webkit-scrollbar': { display: 'none' }
       }}
     >
-      <InView
-        className={wrapperCss()}
-        rootMargin="-50% -50% -50% 0px"
-        onChange={(flag) => {
-          if (flag && !isAnimating.current) setVisibleId(id)
-        }}
+      <Box
+        css={{ aspectRatio: '5/8', height: '100%', scrollSnapAlign: 'start' }}
       >
         <Box
           as={motion.div}
@@ -133,7 +104,7 @@ export const Card = ({ id, name, model, product, slug, fav }: Product) => {
           <Img src={model} alt={name} shown={gridLayout === 'model'} />
           <Img src={product} alt={name} shown={gridLayout === 'product'} />
         </Link>
-      </InView>
+      </Box>
       <Flex
         css={{
           minWidth: '100%',
