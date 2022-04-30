@@ -2,6 +2,8 @@ import { useDrag } from '@use-gesture/react'
 import { useContext, useRef } from 'react'
 import { RiHeart3Fill } from 'react-icons/ri'
 import { InView } from 'react-intersection-observer'
+// @ts-ignore
+import { useAnimini } from '@animini/dom'
 import { Link, useLocation } from 'wouter'
 import { BuyButtonContext } from '../state'
 import { lerp } from '../utils/math'
@@ -15,6 +17,8 @@ export const NextProduct = ({ slug }: Props) => {
 
   const clipRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<HTMLDivElement>(null)
+  const [whiteTitleRef, wapi] = useAnimini()
+  const [blackTitleRef, bapi] = useAnimini()
   const clipPathBottomRef = useRef(100)
   const [, setLocation] = useLocation()
 
@@ -44,8 +48,13 @@ export const NextProduct = ({ slug }: Props) => {
         leftToScroll.current = bottom - window.innerHeight
       }
       const overflowScroll = -(leftToScroll.current + y)
-      if (!active) animateClipPath(100)
-      else if (overflowScroll >= 0) {
+      if (!active) {
+        animateClipPath(100)
+        wapi.start({ y: 0 })
+        bapi.start({ y: 0 })
+      } else if (overflowScroll >= 0) {
+        wapi.start({ y: overflowScroll / 4 }, { factor: 0.1 })
+        bapi.start({ y: overflowScroll / 4 }, { factor: 0.1 })
         animateClipPath(
           (1 - Math.min(1, overflowScroll / elHeight.current)) * 100
         )
@@ -86,34 +95,35 @@ export const NextProduct = ({ slug }: Props) => {
             bottom: 0,
             left: 0,
             right: 0
-            // background: '#F0000088'
           }}
         />
-        <Box css={{ zIndex: 100 }}>
-          <Link href={`/p/${slug}`}>
+        <Link href={`/p/${slug}`}>
+          <Flex as="a" css={{ zIndex: 100 }} ref={whiteTitleRef}>
             You'll love what's next&nbsp;
             <RiHeart3Fill />
-          </Link>
-        </Box>
-      </Flex>
-      <Flex
-        ref={clipRef}
-        css={{
-          position: 'absolute',
-          zIndex: 101,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          clipPath: 'inset(0px 0px 100% 0px)',
-          justifyContent: 'center',
-          paddingTop: '$7',
-          fontSize: '1.7rem',
-          paddingBottom: 'calc($sizes$button + $space$2 * 3)',
-          $invert: ''
-        }}
-      >
-        You'll love what's next&nbsp;
-        <RiHeart3Fill />
+          </Flex>
+        </Link>
+        <Flex
+          ref={clipRef}
+          css={{
+            position: 'absolute',
+            zIndex: 101,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            clipPath: 'inset(0px 0px 100% 0px)',
+            justifyContent: 'center',
+            paddingTop: '$7',
+            fontSize: '1.7rem',
+            paddingBottom: 'calc($sizes$button + $space$2 * 3)',
+            $invert: ''
+          }}
+        >
+          <Flex ref={blackTitleRef}>
+            You'll love what's next&nbsp;
+            <RiHeart3Fill />
+          </Flex>
+        </Flex>
       </Flex>
     </Box>
   )
