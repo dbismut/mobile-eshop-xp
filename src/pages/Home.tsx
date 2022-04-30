@@ -21,15 +21,15 @@ export const Home = () => {
     const y = window.scrollY
     const w = window.innerWidth
     const offsetTop = boxRef.current.offsetTop
-
-    const newY = Math.max(
-      0,
-      gridLayout === 'model'
-        ? offsetTop + (y - offsetTop) / 4 - (w * 8) / 10
-        : offsetTop + (y - offsetTop) * 4 + (w * 8) / 5
-    )
-    setTimeout(() => window.scroll({ top: newY }), 10)
     toggleGridLayout()
+
+    const newY =
+      gridLayout === 'model'
+        ? offsetTop + (y - offsetTop) / 4 - (w * 4) / 5
+        : offsetTop + (y - offsetTop + (w * 4) / 5) * 4
+
+    if (y < offsetTop && newY < offsetTop) return
+    setTimeout(() => window.scroll({ top: newY, behavior: 'smooth' }), 100)
   }
 
   return (
